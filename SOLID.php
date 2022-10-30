@@ -97,3 +97,106 @@ Dependency Inversion Principle («Принцип инверсии зависим
 когда обсуждали принцип открытости-закрытости.
 
 //--------------------------------------------------------------------------------------------------------**/
+
+// SRP
+
+class Product
+{
+   public function title(){/*...*/}
+   public function author(){/*...*/}
+   public function cost(){/*...*/}
+}
+
+class ProductSave // Не пихаем в один класс
+{
+   public function create(){/*...*/}
+   public function insert(){/*...*/}
+   public function update(){/*...*/}
+   public function delete(){/*...*/}
+}
+
+class ProductViews // Не пихаем в один класс
+{
+   public function productViews(){/*...*/}
+}
+
+//ORP
+
+class OrderRepository
+{
+  private $source;
+ 
+  public function setSource(IOrderSource $source)
+  {
+    $this->source = $source;
+  }
+ 
+  public function load($orderID)
+  {
+    return $this->source->load($orderID);
+  }
+  public function save(){/*...*/}
+  public function update(){/*...*/}
+}
+ 
+interface IOrderSource  //Модифицируем код с помощью интерфейсов
+{
+  public function load($orderID);
+  public function save($order);
+  public function update($order);
+  public function delete($order);
+}
+ 
+class MySQLOrderSource implements IOrderSource
+{
+  public function load($orderID){//code
+  }
+  public function save($order){/*...*/}
+  public function update($order){/*...*/}
+  public function delete($order){/*...*/}
+}
+ 
+class ApiOrderSource implements IOrderSource
+{
+  public function load($orderID){//code
+  }
+  public function save($order){/*...*/}
+  public function update($order){/*...*/}
+  public function delete($order){/*...*/}
+}
+
+// ISP
+
+interface IItem // НЕ ПРАВИЛЬНО!!!
+{
+  public function applyDiscount($discount);
+  public function applyPromocode($promocode);
+ 
+  public function setColor($color);
+  public function setSize($size);
+  
+  public function setCondition($condition);
+  public function setPrice($price);
+}
+
+// Правильно
+
+interface apply
+{
+  public function applyDiscount($discount);
+  public function applyPromocode($promocode);
+}
+
+interface paremeter 
+{
+   public function setColor($color);
+   public function setSize($size);
+}
+
+
+interface count 
+{
+   public function setCondition($condition);
+   public function setPrice($price);
+}
+
